@@ -32,6 +32,7 @@ BEGIN
 	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
 
+	-- Check if the specified product name/platform pair alread exists
 	IF(SELECT product_id FROM Product WHERE product_name=@product_name AND product_platform=@product_platform) IS NOT NULL
 		Print 'Specified product already exists.'
 	ELSE

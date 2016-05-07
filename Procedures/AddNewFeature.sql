@@ -30,18 +30,22 @@ BEGIN
 	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
 
-    -- Insert statements for procedure here
 	DECLARE @product_id int; DECLARE @feature_id int; DECLARE @version_id int;
 	SET @product_id = (SELECT product_id FROM dbo.Product WHERE product_name = @product_name AND product_platform = @product_platform);
+	-- If the feature does not exist, add it to the feature table
 	IF(SELECT feature_id FROM Feature WHERE feature_name=@feature_name) IS NULL
 		BEGIN
 			INSERT INTO dbo.Feature VALUES(@feature_name, @feature_desc);
 			SET @feature_id=SCOPE_IDENTITY();
 		END
+
+	-- If the feature already exists, get its ID
 	ELSE
 		BEGIN
 			SET @feature_id = (SELECT feature_id FROM dbo.Feature WHERE feature_name=@feature_name)
 		END
+
+	-- Associate the feature with the specified version.
 	SET @version_id = (SELECT version_id FROM dbo.ProductVersion WHERE product_id = @product_id AND version_num = @version_num);
 	INSERT INTO dbo.FeatureByVersion VALUES(@version_id, @feature_id);
 END

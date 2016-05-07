@@ -55,12 +55,13 @@ BEGIN
 			ON c.feature_id=d.feature_id
 			WHERE a.product_name=@product_name AND b.version_num!=@latest_version AND a.product_platform=@product_platform
 
+	-- Get the number of features in the new features table that are not in the old features table
 	DECLARE @numFeatures int =(SELECT COUNT(*) FROM TempNewFeatures) - (SELECT COUNT(*) FROM TempOldFeatures)
 	IF 0=@numFeatures
 	PRINT 'No new features - this is a bux-fix release.'
 	ELSE
 	PRINT 'There are ' + CAST(@numFeatures AS VARCHAR) + ' new features in the ' + @latest_version + ' release.';
-	-- Drop the temporary table
+	-- Drop the temporary tables
 	DROP TABLE dbo.TempNewFeatures
 	DROP TABLE dbo.TempOldFeatures
 END

@@ -29,11 +29,13 @@ BEGIN
 	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
 	DECLARE @product_id int;
-    -- Insert statements for procedure here
+
+	-- Check that the specified product name/platform pair exists
 	IF(SELECT product_id FROM Product WHERE product_name=@product_name AND product_platform=@product_platform) IS NULL
 		PRINT 'Specified product does not exist.'
 	ELSE
 	BEGIN
+		-- Update the latest_version column in Product and insert a new row into ProductVersion
 		UPDATE Product
 		SET latest_version=@version_num
 		WHERE product_name=@product_name AND product_platform=@product_platform
